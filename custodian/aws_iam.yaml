@@ -1,0 +1,14 @@
+policies:
+- name: iam-no-mfa
+  resource: iam-user
+  filters:
+    - type: credential
+      key: mfa_active
+      value: false
+
+- name: iam-inline-policy
+  resource: iam-user
+  filters:
+    - type: has-inline-policy
+      value: true  
+
