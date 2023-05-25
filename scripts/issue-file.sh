@@ -11,7 +11,10 @@ EOF
 
 IP=$(ip a show ens38 | awk '/inet[^6]/ {print $2}' | grep -v "^10\.50" | sed -e "s/\/24//")
 
-echo "\n####################################################################" >> /etc/issue
+echo  >> /etc/issue
+echo "####################################################################" >> /etc/issue
 echo "Host only IP is $IP" >> /etc/issue
 echo "EWB website is available at http://$IP:507/workbook" >> /etc/issue
-echo "####################################################################\n\n" >> /etc/issue
+echo "####################################################################" >> /etc/issue
+echo  >> /etc/issue
+echo  >> /etc/issue
