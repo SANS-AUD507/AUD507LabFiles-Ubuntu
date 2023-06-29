@@ -13,7 +13,7 @@ IP=$(ip a show ens38 | awk '/inet[^6]/ {print $2}' | grep -v "^10\.50" | sed -e 
 
 echo  >> /etc/issue
 echo "####################################################################" >> /etc/issue
-echo "EWB website is available at:" >> /etc/issue
+echo "Electronic Lab Workbook (EWB) website is available at:" >> /etc/issue
 echo "http://$IP:507/workbook" >> /etc/issue
 echo "####################################################################" >> /etc/issue
 echo  >> /etc/issue
