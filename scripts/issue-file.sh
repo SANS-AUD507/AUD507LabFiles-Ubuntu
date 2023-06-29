@@ -2,9 +2,9 @@
 
 cat << EOF > /etc/issue
 ####################################################################
-This VM hosts some of the services for the AUD507 course.
-There is no need to log on at the console; access is available via
-SSH from the Windows 10 student VM.
+This VM hosts some of the services for the AUD507 lab environment.
+DO NOT log on at this console! 
+Access is available via SSH from the 507Win10 student VM.
 ####################################################################
 
 EOF
