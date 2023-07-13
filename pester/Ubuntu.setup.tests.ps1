@@ -9,9 +9,6 @@ Invoke-Pester -Configuration $config
 #>
 Describe 'Lab Setup tests for 507Ubuntu VM' {
   BeforeDiscovery {
-    #arping is required for testing connectivity to Win10, which has a host firewall
-    sudo apt install -y arping
-
     #If the AWS config files are not there, then skip the AWS tests
     if( -not ( (Test-Path -Type Leaf -Path /home/student/.aws/credentials) -or (Test-Path -Type Leaf -Path /home/student/.aws/config) ) ) {
       Write-Host "Skipping AWS tests because config files do not exist"
@@ -50,7 +47,6 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
 
   #Required ports are open
   Context 'Local TCP ports' {
-
     #Get a list of listening ports to use in all tests
     BeforeAll {
         $localPorts = (sudo netstat -antp | awk '/LISTEN/ { print $4 }')
@@ -116,7 +112,6 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         $res | Should -BeGreaterThan 0
     }
 
-
     It 'DVWA login page' {
         $res = (curl -s http://10.50.7.24:80/login.php | grep -ci dvwa)
         $res | Should -BeGreaterThan 0
@@ -151,11 +146,10 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         $res | should -BeExactly 1
     }
 
-    #Known broken in the I01 version of the VM
-    # It 'Graphite-api' {
-    #     $res = (systemctl --no-pager status graphite-api.service | grep -ci "active (running)")
-    #     $res | should -BeExactly 1
-    # }
+    It 'Graphite-api' {
+        $res = (systemctl --no-pager status graphite-api.service | grep -ci "active (running)")
+        $res | should -BeExactly 1
+    }
 
     It 'Nginx' {
         $res = (systemctl --no-pager status nginx.service | grep -ci "active (running)")
