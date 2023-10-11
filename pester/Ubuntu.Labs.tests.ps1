@@ -70,4 +70,24 @@ Describe '507 Labs'{
       $verList[2] | Should -Be '2.4.25'
     }
   }
+
+  Context 'Lab 2.2' {
+
+    BeforeAll{
+      $nmapResults = (sudo nmap -sT -T4 -p1-65535 10.50.7.101)
+    }
+
+    It 'Part 4 - NMap TCP full-connect scan - Open Ports' {
+      $openPorts = [int]($nmapResults | grep -c 'open' )
+      $openPorts | Should -Be 6
+    }
+
+    It 'Part 4 - NMap TCP full-connect scan - Ports' {
+      $portList = ($nmapResults | awk '/open/ {print $1}')
+      $portList | Should -Contain '22/tcp'
+      $portList | Should -Contain '135/tcp'
+      $portList | Should -Contain '139/tcp'
+      $portList | Should -Contain '445/tcp'
+    }
+  }
 }
