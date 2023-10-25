@@ -4,7 +4,42 @@ spec:
   path: "cloudquery/azure"
   registry: "cloudquery"
   version: "v10.1.1"
-  tables: ["*"]
+  tables: [
+    "azure_authorization_role_assignments",
+    "azure_cdn_managed_rule_sets",
+    "azure_compute_disks",
+    "azure_compute_ssh_public_keys",
+    "azure_compute_virtual_machines",
+    "azure_cosmos_locations",
+    "azure_frontdoor_managed_rule_sets",
+    "azure_monitor_resources",
+    "azure_network_azure_firewall_fqdn_tags",
+    "azure_network_express_route_ports_locations",
+    "azure_network_express_route_service_providers",
+    "azure_network_interface_ip_configurations",
+    "azure_network_interfaces",
+    "azure_network_nat_gateways",
+    "azure_network_public_ip_addresses",
+    "azure_network_route_tables",
+    "azure_network_security_groups",
+    "azure_network_virtual_networks",
+    "azure_network_virtual_network_subnets",
+    "azure_network_watchers",
+    "azure_policy_assignments",
+    "azure_resources_resource_groups",
+    "azure_resources_resources",
+    "azure_security_auto_provisioning_settings",
+    "azure_security_locations",
+    "azure_security_pricings",
+    "azure_security_secure_score_control_definitions",
+    "azure_security_settings",
+    "azure_storage_accounts",
+    "azure_storage_blob_services",
+    "azure_storage_containers",
+    "azure_storage_queue_services",
+    "azure_subscription_subscription_locations",
+    "azure_subscription_subscriptions"
+  ]
   destinations: ["postgresql"]
   spec:
     #subscriptions: []
