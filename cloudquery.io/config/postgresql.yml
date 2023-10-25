@@ -1,7 +1,9 @@
 kind: destination
 spec:
   name: "postgresql"
-  version: "v1.0.0"
+  path: "cloudquery/postgresql"
+  registry: "cloudquery"
+  version: "v6.1.3"
   write_mode: "overwrite" # overwrite, overwrite-delete-stale, append
   spec:
     connection_string: "postgresql://postgres:pass@localhost:5432/postgres?sslmode=disable"

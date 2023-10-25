@@ -1,15 +1,15 @@
 {
   "__inputs": [
     {
-      "name": "DS_POSTGRES",
-      "label": "Postgres",
+      "name": "DS_POSTGRESQL",
+      "label": "PostgreSQL",
       "description": "",
       "type": "datasource",
       "pluginId": "postgres",
       "pluginName": "PostgreSQL"
     }
   ],
-  "__elements": {},
+  "__elements": [],
   "__requires": [
     {
       "type": "panel",
@@ -21,13 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.2.0"
-    },
-    {
-      "type": "datasource",
-      "id": "graphite",
-      "name": "Graphite",
-      "version": "1.0.0"
+      "version": "8.4.7"
     },
     {
       "type": "panel",
@@ -58,10 +52,7 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
+        "datasource": "-- Grafana --",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -80,14 +71,12 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
+  "iteration": 1653764777747,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${DS_POSTGRES}"
-      },
+      "datasource": "${DS_POSTGRESQL}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -127,13 +116,9 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0",
+      "pluginVersion": "8.4.7",
       "targets": [
         {
-          "datasource": {
-            "type": "graphite",
-            "uid": "${DS_GRAPHITE}"
-          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
@@ -146,10 +131,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${DS_POSTGRES}"
-      },
+      "datasource": "${DS_POSTGRESQL}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -179,8 +161,7 @@
         ],
         "legend": {
           "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+          "placement": "bottom"
         },
         "pieType": "pie",
         "reduceOptions": {
@@ -198,10 +179,6 @@
       "pluginVersion": "8.4.7",
       "targets": [
         {
-          "datasource": {
-            "type": "graphite",
-            "uid": "${DS_GRAPHITE}"
-          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
@@ -214,18 +191,13 @@
       "type": "piechart"
     },
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${DS_POSTGRES}"
-      },
+      "datasource": "${DS_POSTGRESQL}",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "continuous-BlYlRd"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "axisSoftMin": 0,
@@ -268,8 +240,7 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+          "placement": "bottom"
         },
         "orientation": "auto",
         "showValue": "auto",
@@ -284,10 +255,6 @@
       "pluginVersion": "8.4.7",
       "targets": [
         {
-          "datasource": {
-            "type": "graphite",
-            "uid": "${DS_GRAPHITE}"
-          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
@@ -300,10 +267,6 @@
       "type": "barchart"
     },
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${DS_POSTGRES}"
-      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -311,8 +274,7 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto",
-            "inspect": false
+            "displayMode": "auto"
           },
           "mappings": [],
           "thresholds": {
@@ -422,47 +384,26 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.2.0",
+      "pluginVersion": "8.4.7",
       "targets": [
         {
           "datasource": {
             "type": "postgres",
-            "uid": "${DS_POSTGRES}"
+            "uid": "${DS_POSTGRESQL}"
           },
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select _cq_id, _cq_table, account_id, region, arn from aws_resources where account_id in (${account_ids}) and region in (${regions}) and _cq_table in (${cq_tables}) ;",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "rawSql": "select _cq_id, _cq_table, account_id, region, arn, _cq_sync_time from aws_resources where account_id in (${account_ids}) and region in (${regions}) and _cq_table in (${cq_tables}) ;",
+          "refId": "A"
         }
       ],
       "title": "AWS Resources",
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${DS_POSTGRES}"
-      },
+      "datasource": "${DS_POSTGRESQL}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -477,7 +418,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -504,10 +446,6 @@
       "pluginVersion": "8.4.7",
       "targets": [
         {
-          "datasource": {
-            "type": "graphite",
-            "uid": "${DS_GRAPHITE}"
-          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
@@ -520,10 +458,7 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${DS_POSTGRES}"
-      },
+      "datasource": "${DS_POSTGRESQL}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -538,7 +473,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -594,10 +530,6 @@
       "pluginVersion": "8.4.7",
       "targets": [
         {
-          "datasource": {
-            "type": "graphite",
-            "uid": "${DS_GRAPHITE}"
-          },
           "format": "table",
           "group": [],
           "metricColumn": "none",
@@ -610,7 +542,7 @@
       "type": "table"
     }
   ],
-  "schemaVersion": 37,
+  "schemaVersion": 35,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -619,7 +551,7 @@
         "current": {},
         "datasource": {
           "type": "postgres",
-          "uid": "${DS_POSTGRES}"
+          "uid": "${DS_POSTGRESQL}"
         },
         "definition": "select distinct(account_id) from aws_resources",
         "hide": 0,
@@ -638,7 +570,7 @@
         "current": {},
         "datasource": {
           "type": "postgres",
-          "uid": "${DS_POSTGRES}"
+          "uid": "${DS_POSTGRESQL}"
         },
         "definition": "select distinct(region) from aws_resources;",
         "hide": 0,
@@ -655,10 +587,6 @@
       },
       {
         "current": {},
-        "datasource": {
-          "type": "postgres",
-          "uid": "${DS_POSTGRES}"
-        },
         "definition": "select distinct(_cq_table) from aws_resources;",
         "hide": 0,
         "includeAll": true,
@@ -670,7 +598,8 @@
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
-        "type": "query"
+        "type": "query",
+        "datasource": "${DS_POSTGRESQL}"
       }
     ]
   },
@@ -682,6 +611,6 @@
   "timezone": "",
   "title": "AWS Asset Inventory",
   "uid": "aws_asset_inventoryqwe",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
