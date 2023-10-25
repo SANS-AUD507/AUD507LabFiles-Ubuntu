@@ -41,13 +41,13 @@ Describe '507 Labs'{
     }
 
     It 'Part 2 - Stealth scan gets filtered port 80' {
-      $portCount = [int]( sudo nmap -sS -p 80 10.50.7.26 | grep -c 'filtered' )
+      $portCount = [int]( sudo nmap -sS -p 80 10.50.7.22-29 | grep -c 'filtered' )
       $portCount | Should -Be 1
     }
 
     It 'Part 2 - Connect scan gets open port 80' {
-      $portCount = [int]( sudo nmap -sT -p 80 10.50.7.26 | grep -c 'open' )
-      $portCount | Should -Be 1
+      $portCount = [int]( sudo nmap -sT -p 80 10.50.7.22-29 | grep -c 'open' )
+      $portCount | Should -Be 4
     }
     
     It 'Part 3 - OpenSSH version is 8.9p1' {
@@ -68,6 +68,26 @@ Describe '507 Labs'{
       $verList[0] | Should -Be '2.4.7'
       $verList[1] | Should -Be '2.4.7'
       $verList[2] | Should -Be '2.4.25'
+    }
+  }
+
+  Context 'Lab 2.2' {
+
+    BeforeAll{
+      $nmapResults = (sudo nmap -sT -T4 -p1-65535 10.50.7.101)
+    }
+
+    It 'Part 4 - NMap TCP full-connect scan - Open Ports' {
+      $openPorts = [int]($nmapResults | grep -c 'open' )
+      $openPorts | Should -Be 6
+    }
+
+    It 'Part 4 - NMap TCP full-connect scan - Ports' {
+      $portList = ($nmapResults | awk '/open/ {print $1}')
+      $portList | Should -Contain '22/tcp'
+      $portList | Should -Contain '135/tcp'
+      $portList | Should -Contain '139/tcp'
+      $portList | Should -Contain '445/tcp'
     }
   }
 }
