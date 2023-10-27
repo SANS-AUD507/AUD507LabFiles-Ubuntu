@@ -34,6 +34,7 @@ spec:
     "aws_ec2_vpc_endpoints",
     "aws_ec2_vpcs",
     "aws_eventbridge_event_buses",
+    "aws_iam_accounts",
     "aws_iam_credential_reports",
     "aws_iam_groups",
     "aws_iam_password_policies",
