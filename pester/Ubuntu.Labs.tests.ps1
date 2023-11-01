@@ -74,7 +74,7 @@ Describe '507 Labs'{
   Context 'Lab 2.2' {
 
     BeforeAll{
-      Write-Host "Running full connect scan against Win10 VM"
+      Write-Host "Running full connect scan against Win10 VM (slow)"
       $nmapResults = (sudo nmap -sT -T4 -p1-65535 10.50.7.101)
     }
 
@@ -105,7 +105,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 1 - APT shows missing patches' {
-      (apt list --upgradable | grep -cv 'Listing' ) |
+      (apt list --upgradable 2>/dev/null| grep -cv 'Listing' ) |
         Should -BeGreaterOrEqual 1
     }
 
