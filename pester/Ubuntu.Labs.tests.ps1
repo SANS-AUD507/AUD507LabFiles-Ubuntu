@@ -103,5 +103,15 @@ Describe '507 Labs'{
       $versionList | Should -Contain 'TLSv1.2'
       $versionList | Should -Contain 'TLSv1.3'
     }
+
+    It 'Part 3 - Nmap returns correct headers' {
+      $res = nmap -p80 10.50.7.20 --script http-headers
+      $res | grep -c 'Strict-Transport-Security' |
+        Should -BeExactly 0
+      $res | grep -c 'Content-Security-Policy' |
+        Should -BeExactly 0
+      $res | grep -c 'X-Frame-Options' |
+        Should -BeExactly 1
+    }
   }
 }
