@@ -75,6 +75,7 @@ Describe '507 Labs'{
 
     BeforeAll{
       Write-Host "Running full connect scan against Win10 VM (slow)"
+      #Lab does full 1-65535 port scan. Trying a top 1000 to speed up testing
       $nmapResults = (sudo nmap -sT -T4 10.50.7.101)
     }
 
@@ -199,7 +200,6 @@ Describe '507 Labs'{
       $query = "Select name,source,status,path from startup_items;"
       $items = (sudo osqueryi "$query" --json | ConvertFrom-Json)
       $items.Count | Should -BeGreaterThan 0
-
     }
   }
 
