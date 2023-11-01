@@ -206,9 +206,9 @@ Describe '507 Labs'{
   Context 'Lab 3.3' {
     #TODO: Check file hashes on all the log files
     AfterAll {
-      #Delete the rules you created
+      #Delete the rules we created
       sudo auditctl -D
-      #delete the files you copied
+      #Delete the files we copied
       sudo rm -fR /root/lynis
     }
     It 'Part 1 - Syslog has 28 entries for BuggyBank' {
@@ -244,7 +244,7 @@ Describe '507 Labs'{
       sudo chown -R root:root /root/lynis
       sudo chmod +x /root/lynis/lynis
 
-      $logEntries = (sudo ausearch -k rootHome | aureport -f -i)
+      $logEntries = (sudo ausearch -k rootHome | sudo aureport -f -i)
       $logEntries.Count | Should -BeGreaterThan 100
     }
   }
