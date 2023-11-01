@@ -112,7 +112,94 @@ Describe '507 Labs'{
       $res = (sudo find / -type f -perm /4000 2>/dev/null) 
       $res.Count | Should -BeGreaterThan 100
     }
+    #Part 2 is tested via SSH to Alma from Windows VM
 
+    It 'Part 3 - Osquery returns correct OS information' {
+      $res = osqueryi "select * from os_version" --json | ConvertFrom-Json
+      $res.codename | Should -BeExactly "jammy"
+      $res.major | Should -BeExactly 22
+      $res.minor | Should -BeExactly 4
+      $res.name | Should -BeExactly "Ubuntu"
+      $res.patch | Should -BeExactly 0
+      $res.platform | Should -BeExactly "ubuntu"
+      $res.platform_like | Should -BeExactly "debian"
+      $res.version | Should -BeExactly "22.04.3 LTS (Jammy Jellyfish)"
+    }
+
+    It 'Part 3 - Osquery returns 51 SUID binaries' {
+      $res = (osqueryi "Select * from suid_bin;" --json | ConvertFrom-Json)
+      $res.Count | Should -BeExactly 51
+    }
+  }
+
+  Context 'Lab 3.2' {
+    It 'Part 1 - twSetup script is correct' {
+      $hash= (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twSetup.sh)
+      $hash | Should -BeExactly 'CDF13850E29ED09119AED455038AA2B24704FDBD4FF1A33B85CC66A9C9713421'
+    }
+
+    It 'Part 1 - Original tripwire policy is correct' {
+      $hash= (Get-FileHash -Algorithm SHA256 -Path /etc/tripwire/twpol.txt)
+      $hash | Should -BeExactly '16FE9FF02E0BECE41001A4D6182384792F9023E160C0B0C646D2448726EC3166'
+    }
+
+    It 'Part 1 - Corrected tripwire policy is correct' {
+      $hash= (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twpol-corrected.txt)
+      $hash | Should -BeExactly '9730F635E33FA2D39914CD19258EA691C95796A3DE4503F2F6D88F3023A55A42'
+    }
+
+    It 'Part 2 - net.ipv4.tcp_syncookies = 1' {
+      $setting = sysctl net.ipv4.tcp_syncookies | awk '{print $3}'
+      $setting | Should -BeExactly 1
+    }
+
+    It 'Part 2 - kernel.randomize_va_space = 2' {
+      $setting = sysctl kernel.randomize_va_space | awk '{print $3}'
+      $setting | Should -BeExactly 2
+    }
+
+    It 'Part 2 - net.ipv4.ip_forward = 1' {
+      $setting = sysctl net.ipv4.ip_forward | awk '{print $3}'
+      $setting | Should -BeExactly 1
+    }
+
+    It 'Part 3 - Netstat shows port 6379 on loopback' {
+      $ports = sudo netstat -ant | awk '/^tcp.*LISTEN[ ]*$/ {print $4}' | sort -n | grep 6379
+      $ports | Should -Contain '::1:6379'
+      $ports | Should -Contain '127.0.0.1:6379'
+    }
+
+    It 'Part 3 - Nmap does not show port 6379' {
+      $portCount = (sudo nmap -sT -p 1-65535 10.50.7.20-29 | grep -c 6379)
+      $portCount | Should -BeExactly 0
+    }
+
+    #Part 4 - Live systemctl tests- no need to test them here
+
+    It 'Part 5 - Osquery shows 76 open TCP ports' {
+      $query = "select address,port from listening_ports where protocol=6 order by address,port;"
+      $ports = (osqueryi "$query" --json | ConvertFrom-Json)
+      $ports.Count | Should -BeExactly 76
+    }
+
+    It 'Part 5 - Osquery shows -1 for pids' {
+      $query = "select pid,address,port from listening_ports where protocol=6 order by address,port;"
+      $ports = (osqueryi "$query" --json | ConvertFrom-Json)
+      $ports[0].pid | Should -BeExactly -1
+    }
+
+    It 'Part 5 - Osquery shows correct pids with sudo' {
+      $query = "select pid,address,port from listening_ports where protocol=6 order by address,port;"
+      $ports = (sudo osqueryi "$query" --json | ConvertFrom-Json)
+      $ports[0].pid | Should -BeGreaterOrEqual 0
+    }
+
+    It 'Part 5 - Osquery shows startup items' {
+      $query = "Select name,source,status,path from startup_items;"
+      $items = (sudo osqueryi "$query" --json | ConvertFrom-Json)
+      $items.Count | Should -BeGreaterThan 0
+
+    }
   }
 
   Context 'Lab 5.2'{
