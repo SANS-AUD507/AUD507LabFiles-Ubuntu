@@ -74,6 +74,7 @@ Describe '507 Labs'{
   Context 'Lab 2.2' {
 
     BeforeAll{
+      Write-Host "Running full connect scan against Win10 VM"
       $nmapResults = (sudo nmap -sT -T4 -p1-65535 10.50.7.101)
     }
 
