@@ -77,21 +77,26 @@ Describe '507 Labs'{
       $nmapResults = (sudo nmap -sT -T4 -p1-65535 10.50.7.101)
     }
 
-    It 'Part 4 - NMap TCP full-connect scan - Open Ports' {
+    It 'Part 4 - Nmap TCP full-connect scan - Open Ports' {
       $openPorts = [int]($nmapResults | grep -c 'open' )
       $openPorts | Should -Be 6
     }
 
-    It 'Part 4 - NMap TCP full-connect scan - Ports' {
+    It 'Part 4 - Nmap TCP full-connect scan - Ports' {
       $portList = ($nmapResults | awk '/open/ {print $1}')
       $portList | Should -Contain '22/tcp'
       $portList | Should -Contain '135/tcp'
       $portList | Should -Contain '139/tcp'
       $portList | Should -Contain '445/tcp'
     }
+
+    It 'Part 4 - Nmap robots.txt lists ftp directory' {
+      $res = (nmap -p80 10.50.7.20 --script http-robots.txt)
+      $res | Should -Contain '|_/ftp'
+    }
   }
 
-  Context 'Lab 5.2'{
+    Context 'Lab 5.2'{
     It 'Part 2 - Nmap returns self-signed cert' {
       $issuerInfo = (sudo nmap -p443 10.50.7.20 --script ssl-cert | awk '/Issuer:/ {print$3}')
       $issuerInfo | Should -BeLike '*juiceshop.5x7.local*'
