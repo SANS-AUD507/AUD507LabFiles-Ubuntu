@@ -203,6 +203,47 @@ Describe '507 Labs'{
     }
   }
 
+  Context 'Lab 3.3' {
+    #TODO: Check file hashes on all the log files
+
+    It 'Part 1 - Syslog has 28 entries for BuggyBank' {
+      $logCount = (grep -ic buggybank /home/student/logs/syslog)
+      $logCount | Should -BeExactly 28
+    }
+    
+    It 'Part 1 - Syslog has 130 entries for systemd.*executable' {
+      $logCount = (grep -c "systemd.*executable" /home/student/logs/syslog)
+      $logCount | Should -BeExactly 130
+    }
+
+    It 'Part 1 - Syslog.2.gz has 30 entries for systemd.*executable' {
+      $logCount = (zgrep -c "systemd" /home/student/logs/syslog.2.gz)
+      $logCount | Should -BeExactly 30
+    }
+
+    It 'Part 2 - Journalctl shows at least one prior boot' {
+      (journalctl --list-boots).Count | Should -BeGreaterOrEqual 2
+    }
+
+    It 'Part 3 - Auditctl shows no initial rules' {
+      $ruleList = (sudo auditctl -l)
+      $ruleList | Should -BeExactly 'No rules'
+    }
+
+    It 'Part 4 - Auditctl rules yield >100 search results' {
+      #Do the lab steps:
+      sudo auditctl -w /root -k rootHome
+      sudo auditctl -w /home/student -k studentHome
+
+      sudo cp -vR /home/student/AUD507-Labs/lynis /root
+      sudo chown -R root:root /root/lynis
+      sudo chmod +x /root/lynis/lynis
+
+      $logEntries = (sudo ausearch -k rootHome | aureport -f -i)
+      $logEntries.Count | Should -BeGreaterThan 100
+    }
+  }
+
   Context 'Lab 5.2'{
     It 'Part 2 - Nmap returns self-signed cert' {
       $issuerInfo = (sudo nmap -p443 10.50.7.20 --script ssl-cert | awk '/Issuer:/ {print$3}')
