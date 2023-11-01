@@ -257,6 +257,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 2 - Inspec DIL Ubuntu returns results' {
+      Write-Host "Running inspec against Ubuntu (slow)"
       Set-Location /home/student/AUD507-Labs/inspec
       $res = (inspec exec ./cis-dil-benchmark/ --reporter json:- | ConvertFrom-Json)
       ($res.profiles.controls.results | Where-Object Status -eq 'failed').Count |
@@ -267,7 +268,8 @@ Describe '507 Labs'{
         Should -BeGreaterThan 0
     }
 
-    It 'Part 3 - Inspec DIL Ubuntu returns results' {
+    It 'Part 3 - Inspec DIL Alma returns results' {
+      Write-Host "Running inspec against Alma (slow)"
       Set-Location /home/student/AUD507-Labs/inspec
       $res = (inspec exec ./cis-dil-benchmark/ -t ssh://student:student@10.50.7.40 --reporter json:- | ConvertFrom-Json)
       ($res.profiles.controls.results | Where-Object Status -eq 'failed').Count |
