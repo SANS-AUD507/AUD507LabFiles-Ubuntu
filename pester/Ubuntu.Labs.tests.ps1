@@ -109,7 +109,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 1 - SUID count is > 100' {
-      $res = (sudo find / -type f -perm /4000)
+      $res = (sudo find / -type f -perm /4000 2>/dev/null) 
       $res.Count | Should -BeGreaterThan 100
     }
 
