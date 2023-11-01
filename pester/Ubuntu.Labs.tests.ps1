@@ -75,7 +75,7 @@ Describe '507 Labs'{
 
     BeforeAll{
       Write-Host "Running full connect scan against Win10 VM (slow)"
-      $nmapResults = (sudo nmap -sT -T4 -p1-65535 10.50.7.101)
+      $nmapResults = (sudo nmap -sT -T4 10.50.7.101)
     }
 
     It 'Part 4 - Nmap TCP full-connect scan - Open Ports' {
