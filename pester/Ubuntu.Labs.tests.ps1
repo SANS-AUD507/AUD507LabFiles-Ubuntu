@@ -249,6 +249,36 @@ Describe '507 Labs'{
     }
   }
 
+  Context 'Lab 3.4' {
+    It 'Part 1 - Lynis is version 3.0.9' {
+      Set-Location /home/student/AUD507-Labs/lynis
+      $res = (bash ./lynis show version)
+      $res | Should -BeExactly '3.0.9'
+    }
+
+    It 'Part 2 - Inspec DIL Ubuntu returns results' {
+      Set-Location /home/student/AUD507-Labs/inspec
+      $res = (inspec exec ./cis-dil-benchmark/ --reporter json:- | ConvertFrom-Json)
+      ($res.profiles.controls.results | Where-Object Status -eq 'failed').Count |
+        Should -BeGreaterThan 0
+      ($res.profiles.controls.results | Where-Object Status -eq 'passed').Count |
+        Should -BeGreaterThan 0
+      ($res.profiles.controls.results | Where-Object Status -eq 'skipped').Count |
+        Should -BeGreaterThan 0
+    }
+
+    It 'Part 3 - Inspec DIL Ubuntu returns results' {
+      Set-Location /home/student/AUD507-Labs/inspec
+      $res = (inspec exec ./cis-dil-benchmark/ -t ssh://student:student@10.50.7.40 --reporter json:- | ConvertFrom-Json)
+      ($res.profiles.controls.results | Where-Object Status -eq 'failed').Count |
+        Should -BeGreaterThan 0
+      ($res.profiles.controls.results | Where-Object Status -eq 'passed').Count |
+        Should -BeGreaterThan 0
+      ($res.profiles.controls.results | Where-Object Status -eq 'skipped').Count |
+        Should -BeGreaterThan 0
+    }
+  }
+
   Context 'Lab 5.2'{
     It 'Part 2 - Nmap returns self-signed cert' {
       $issuerInfo = (sudo nmap -p443 10.50.7.20 --script ssl-cert | awk '/Issuer:/ {print$3}')
