@@ -94,7 +94,7 @@ Describe '507 Labs'{
   Context 'Lab 5.2'{
     It 'Part 2 - Nmap returns self-signed cert' {
       $issuerInfo = (sudo nmap -p443 10.50.7.20 --script ssl-cert | awk '/Issuer:/ {print$3}')
-      $issuerInfo | Should -Match '*juiceshop.5x7.local*'
+      $issuerInfo | Should -BeLike '*juiceshop.5x7.local*'
     }
 
     It 'Part 2 - Nmap returns TLS v1.2 and v1.3' {
