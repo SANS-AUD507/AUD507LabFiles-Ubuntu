@@ -96,7 +96,7 @@ Describe '507 Labs'{
       (lsb_release -i | awk -F: '{print $2}') |
         Should -BeLike '*Ubuntu'
       (lsb_release -d | awk -F: '{print $2}') |
-        Should -BeLike '*Ubuntu 22.04.3 LTS*'
+        Should -BeLike '*Ubuntu 22.04.3 LTS'
       (lsb_release -r | awk -F: '{print $2}') |
         Should -BeLike '*22.04'
       (lsb_release -c | awk -F: '{print $2}') | 
