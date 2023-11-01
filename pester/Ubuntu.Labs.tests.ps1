@@ -89,14 +89,33 @@ Describe '507 Labs'{
       $portList | Should -Contain '139/tcp'
       $portList | Should -Contain '445/tcp'
     }
-
-    It 'Part 4 - Nmap robots.txt lists ftp directory' {
-      $res = (nmap -p80 10.50.7.20 --script http-robots.txt)
-      $res | Should -Contain '|_/ftp'
-    }
   }
 
-    Context 'Lab 5.2'{
+  Context 'Lab 3.1' {
+    It 'Part 1 - lsb_release distribution is correct' {
+      (lsb_release -i | awk -F: '{print $2}') |
+        Should -BeLike '*Ubuntu'
+      (lsb_release -d | awk -F: '{print $2}') |
+        Should -BeLike '*Ubuntu 22.04.3 LTS*'
+      (lsb_release -r | awk -F: '{print $2}') |
+        Should -BeLike '*22.04'
+      (lsb_release -c | awk -F: '{print $2}') | 
+        Should -BeLike '*jammy'
+    }
+
+    It 'Part 1 - APT shows missing patches' {
+      (apt list --upgradable | grep -cv 'Listing' ) |
+        Should -BeGreaterOrEqual 1
+    }
+
+    It 'Part 1 - SUID count is > 100' {
+      $res = (sudo find / -type f -perm /4000)
+      $res.Count | Should -BeGreaterThan 100
+    }
+
+  }
+
+  Context 'Lab 5.2'{
     It 'Part 2 - Nmap returns self-signed cert' {
       $issuerInfo = (sudo nmap -p443 10.50.7.20 --script ssl-cert | awk '/Issuer:/ {print$3}')
       $issuerInfo | Should -BeLike '*juiceshop.5x7.local*'
@@ -117,6 +136,18 @@ Describe '507 Labs'{
         Should -BeExactly 0
       $res | grep -c 'X-Frame-Options' |
         Should -BeExactly 1
+    }
+    
+    It 'Part 3 - Nmap robots.txt lists ftp directory' {
+      $res = (nmap -p80 10.50.7.20 --script http-robots.txt)
+      $res | Should -Contain '|_/ftp'
+    }
+
+    #Part 4 uses browser plugins and is not tested
+
+    It 'Part 5 - NodeJSScan container exists' {
+      (docker image ls | awk '/\// {print $1 $2}') | 
+        Should -Contain 'opensecurity/nodejsscan5x7.22.1'
     }
   }
 }
