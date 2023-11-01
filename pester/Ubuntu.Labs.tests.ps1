@@ -126,25 +126,25 @@ Describe '507 Labs'{
       $res.version | Should -BeExactly "22.04.3 LTS (Jammy Jellyfish)"
     }
 
-    It 'Part 3 - Osquery returns 51 SUID binaries' {
+    It 'Part 3 - Osquery returns 52 SUID binaries' {
       $res = (osqueryi "Select * from suid_bin;" --json | ConvertFrom-Json)
-      $res.Count | Should -BeExactly 51
+      $res.Count | Should -BeExactly 52
     }
   }
 
   Context 'Lab 3.2' {
     It 'Part 1 - twSetup script is correct' {
-      $hash= (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twSetup.sh)
+      $hash= (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twSetup.sh).Hash
       $hash | Should -BeExactly 'CDF13850E29ED09119AED455038AA2B24704FDBD4FF1A33B85CC66A9C9713421'
     }
 
     It 'Part 1 - Original tripwire policy is correct' {
-      $hash= (Get-FileHash -Algorithm SHA256 -Path /etc/tripwire/twpol.txt)
+      $hash= (Get-FileHash -Algorithm SHA256 -Path /etc/tripwire/twpol.txt).Hash
       $hash | Should -BeExactly '16FE9FF02E0BECE41001A4D6182384792F9023E160C0B0C646D2448726EC3166'
     }
 
     It 'Part 1 - Corrected tripwire policy is correct' {
-      $hash= (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twpol-corrected.txt)
+      $hash= (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twpol-corrected.txt).Hash
       $hash | Should -BeExactly '9730F635E33FA2D39914CD19258EA691C95796A3DE4503F2F6D88F3023A55A42'
     }
 
