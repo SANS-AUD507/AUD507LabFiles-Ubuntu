@@ -90,4 +90,18 @@ Describe '507 Labs'{
       $portList | Should -Contain '445/tcp'
     }
   }
+
+  Context 'Lab 5.2'{
+    It 'Part 2 - Nmap returns self-signed cert' {
+      $issuerInfo = (sudo nmap -p443 10.50.7.20 --script ssl-cert | awk '/Issuer:/ {print$3}')
+      $issuerInfo | Should -Match '*juiceshop.5x7.local*'
+    }
+
+    It 'Part 2 - Nmap returns TLS v1.2 and v1.3' {
+      $versionList = (nmap -p443 10.50.7.20 --script ssl-enum-ciphers | awk '/TLSv[0-9]/ {print $2}' | sed -e 's/://g')
+      $versionList.Count | Should -BeExactly 2
+      $versionList | Should -Contain 'TLSv1.2'
+      $versionList | Should -Contain 'TLSv1.3'
+    }
+  }
 }
