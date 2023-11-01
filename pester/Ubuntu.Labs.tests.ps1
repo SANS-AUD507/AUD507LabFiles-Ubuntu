@@ -205,7 +205,12 @@ Describe '507 Labs'{
 
   Context 'Lab 3.3' {
     #TODO: Check file hashes on all the log files
-
+    AfterAll {
+      #Delete the rules you created
+      sudo auditctl -D
+      #delete the files you copied
+      sudo rm -fR /root/lynis
+    }
     It 'Part 1 - Syslog has 28 entries for BuggyBank' {
       $logCount = (grep -ic buggybank /home/student/logs/syslog)
       $logCount | Should -BeExactly 28
