@@ -74,7 +74,7 @@ Describe '507 Labs'{
   Context 'Lab 2.2' {
 
     BeforeAll{
-      Write-Host "Running full connect scan against Win10 VM (slow)"
+      Write-Host "Running nmap full connect scan against Win10 VM (slow)"
       $nmapResults = (sudo nmap -sT -p1-65535 -T4 10.50.7.101)
     }
 
@@ -211,17 +211,17 @@ Describe '507 Labs'{
       sudo rm -fR /root/lynis
     }
     It 'Part 1 - Syslog has 28 entries for BuggyBank' {
-      $logCount = (grep -ic buggybank /home/student/logs/syslog)
+      $logCount = (grep -ic buggybank /home/student/AUD507-Labs/logs/syslog)
       $logCount | Should -BeExactly 28
     }
     
     It 'Part 1 - Syslog has 130 entries for systemd.*executable' {
-      $logCount = (grep -c "systemd.*executable" /home/student/logs/syslog)
+      $logCount = (grep -c "systemd.*executable" /home/student/AUD507-Labs/logs/syslog)
       $logCount | Should -BeExactly 130
     }
 
     It 'Part 1 - Syslog.2.gz has 30 entries for systemd.*executable' {
-      $logCount = (zgrep -c "systemd" /home/student/logs/syslog.2.gz)
+      $logCount = (zgrep -c "systemd" /home/student/AUD507-Labs/logs/syslog.2.gz)
       $logCount | Should -BeExactly 30
     }
 
