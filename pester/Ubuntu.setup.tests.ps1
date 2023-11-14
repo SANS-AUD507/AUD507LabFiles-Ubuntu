@@ -4,7 +4,7 @@
 Set-Location /home/student/AUD507-Labs/pester/
 $config=New-PesterConfiguration
 $config.Output.Verbosity='detailed'
-$config.Run.Path='./Ubuntu.Setup.tests.ps1'
+$config.Run.Path='/home/student/AUD507-Labs/pester/Ubuntu.Setup.tests.ps1'
 Invoke-Pester -Configuration $config
 #>
 Describe 'Lab Setup tests for 507Ubuntu VM' {
