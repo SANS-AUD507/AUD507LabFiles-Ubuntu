@@ -23,14 +23,6 @@
     "ec2_securitygroup_default_restrict_traffic",
     "ec2_securitygroup_from_launch_wizard",
     "ec2_securitygroup_not_used",
-    "ec2_securitygroup_with_many_ingress_egress_rules",
-    "vpc_different_regions",
-    "vpc_endpoint_connections_trust_boundaries",
-    "vpc_endpoint_services_allowed_principals_trust_boundaries",
-    "vpc_flow_logs_enabled",
-    "vpc_peering_routing_tables_with_least_privilege",
-    "vpc_subnet_different_az",
-    "vpc_subnet_no_public_ip_by_default",
-    "vpc_subnet_separate_private_public"
+    "ec2_securitygroup_with_many_ingress_egress_rules"
   ]
 }
