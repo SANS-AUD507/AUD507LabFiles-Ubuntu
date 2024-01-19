@@ -369,21 +369,18 @@ Describe '507 Labs'{
 
     It 'Part 3 - kubectl has pods in the default namespce' {
       $res = (kubectl get pods --namespace default | wc -l)
-      $res | Should -BeExactly 4
+      #4 services + header row = 5
+      $res | Should -BeExactly 5
     }
 
     It 'Part 3 - kubectl has services in the default namespce' {
       $res = (kubectl get services --namespace default | wc -l)
-      $res | Should -BeExactly 4
+      #5 services + header row = 6
+      $res | Should -BeExactly 6
     }
 
     It 'Part 3 - kubectl network policy has no resources' {
-      $res = (kubectl get networkpolicy --all-namespaces | grep -c 'No resources found')
-      $res | Should -BeExactly 1
-    }
-
-    It 'Part 3 - kubectl network policy has no resources' {
-      $res = (kubectl get networkpolicy --all-namespaces | grep -c 'No resources found')
+      $res = (kubectl get networkpolicy --all-namespaces 2>&1| grep -c 'No resources found')
       $res | Should -BeExactly 1
     }
 
