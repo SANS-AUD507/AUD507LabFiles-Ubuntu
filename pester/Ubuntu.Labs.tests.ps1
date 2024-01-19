@@ -304,7 +304,118 @@ Describe '507 Labs'{
     }
   }
 
-  Context 'Lab 5.2'{
+  Context 'Lab 4.1'{
+    BeforeAll {
+      #Create docker bench results file
+      sudo bash /home/student/AUD507-Labs/docker-bench-security/docker-bench-security.sh -b -l results.txt
+
+      #pull kube-bench docker container
+      docker pull docker.io/aquasec/kube-bench:latest
+    }
+    AfterAll {
+      #Delete the docker bench results file
+      sudo rm -f results.txt
+
+      #remove kube-bench docker container
+      docker rmi aquasec/kube-bench
+    }
+    It 'Part 1 - Check docker root directory' {
+      $res = (docker info -f '{{ .DockerRootDir }}' | grep -c '/var/lib/docker')
+      $res | Should -BeExactly 1
+    }
+
+    It 'Part 1 - /var/lib/docker not a mountpoint' {
+      $res = (mountpoint /var/lib/docker | grep -c 'is not a mountpoint')
+      $res | Should -BeExactly 1
+    }
+
+    It 'Part 1 - Docker default bridge disallow traffic between containers' {
+      $res = (docker network ls --quiet | xargs docker network inspect --format '{{ .Name}}: {{ .Options }}' 
+      | grep -c 'com.docker.network.bridge.enable_icc:true')
+      $res | Should -BeExactly 1
+    }
+
+    It 'Part 1 - aufs not used as a storage driver' {
+      $res = (docker info --format 'Storage Driver: {{ .Driver }}' | grep -c 'aufs')
+      $res | Should -BeExactly 0
+      $res = (docker info --format 'Storage Driver: {{ .Driver }}' | grep -c 'overlay2')
+      $res | Should -BeExactly 1
+    }
+
+    It 'Part 1 - daemon.json does not exist' {
+      $res = (sudo find / -name "daemon.json" -type f | wc -l)
+      $res | Should -BeExactly 0
+    }
+
+    It 'Part 2 - Docker-Bench returns passes' {
+      $res = (grep "^\[PASS\]" results.txt | wc -l)
+      $res | Should -BeGreaterOrEqual 1
+    }
+
+    It 'Part 2 - Docker-Bench returns warns' {
+      $res = (grep "^\[WARN\]" results.txt | wc -l)
+      $res | Should -BeGreaterOrEqual 1
+    }
+
+    It 'Part 2 - Docker-Bench returns infos' {
+      $res = (grep "^\[INFO\]" results.txt | wc -l)
+      $res | Should -BeGreaterOrEqual 1
+    }
+
+    It 'Part 2 - Docker-Bench has correct score' {
+      $res = (cat ./results.txt | awk '/INFO.*Score:/ {print $3}')
+      $res | Should -BeExactly 4
+    }
+
+    It 'Part 3 - kubectl client version check' {
+      $res = (kubectl version | awk '/Client.*:/ {print $3}')
+      $res | Should -BeExactly 'v1.28.4'
+    }
+
+    It 'Part 3 - kubectl kustomize version check' {
+      $res = (kubectl version | awk '/Kustomize.*:/ {print $3}')
+      $res | Should -BeExactly 'v5.0.4-0.20230601165947-6ce0bf390ce3'
+    }
+
+    It 'Part 3 - kubectl server version check' {
+      $res = (kubectl version | awk '/Server.*:/ {print $3}')
+      $res | Should -BeExactly 'v1.28.3'
+    }
+
+    It 'Part 3 - kubectl has namespaces' {
+      $res = (microk8s kubectl get namespaces | wc -l)
+      $res | Should -BeGreaterOrEqual 2
+    }
+
+    It 'Part 3 - kubectl has pods in the default namespce' {
+      $res = (microk8s kubectl get pods --namespace default | wc -l)
+      $res | Should -BeExactly 4
+    }
+
+    It 'Part 3 - kubectl has services in the default namespce' {
+      $res = (microk8s kubectl get services --namespace default | wc -l)
+      $res | Should -BeExactly 4
+    }
+
+    It 'Part 3 - kubectl network policy has no resources' {
+      $res = (microk8s kubectl get networkpolicy --all-namespaces | grep -c 'No resources found')
+      $res | Should -BeExactly 1
+    }
+
+    It 'Part 3 - kubectl network policy has no resources' {
+      $res = (microk8s kubectl get networkpolicy --all-namespaces | grep -c 'No resources found')
+      $res | Should -BeExactly 1
+    }
+
+    # TODO: revisit in the future?
+    It 'Part 4 - kube-bench returns results' {
+      $res = (docker run --pid=host -v /etc:/etc:ro -v /var:/var:ro -v /usr/local/bin/kubectl:/usr/local/mount-from-host/bin/kubectl -v ~/.kube:/.kube -e KUBECONFIG=/.kube/config -t docker.io/aquasec/kube-bench:latest run
+        | tail -13 | awk '/ checks / {print $1}' )
+      $res.count | Should -BeExactly 8
+    }
+  }
+
+  Context 'Lab 5.2' {
     It 'Part 2 - Nmap returns self-signed cert' {
       $issuerInfo = (sudo nmap -p443 10.50.7.20 --script ssl-cert | awk '/Issuer:/ {print$3}')
       $issuerInfo | Should -BeLike '*juiceshop.5x7.local*'
