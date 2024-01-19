@@ -247,6 +247,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         '/home/student/AUD507-Labs/custodian/aws_ingress.yaml' | 
             should -FileContentMatch 'aws-ingress-admin-ports-allowed'
     }
+    #TODO: Check for cloudquery files from lab 4.4 - part 4
   }
 
   Context 'Cloud CLI configuration - Azure' -skip:$skipAzure {

@@ -422,9 +422,11 @@ Describe '507 Labs'{
     }
   }
 
+  # TODO: Do the other parts of this lab
   Context 'Lab 4.3'{
     BeforeAll {
       ~/custodian/bin/custodian run --output-dir ./pester /home/student/AUD507-Labs/custodian/aws_ingress.yaml
+    
     }
     # Part 1 is Web UI for AWS - not tested.
 
@@ -437,6 +439,58 @@ Describe '507 Labs'{
       (Get-Content ./pester/aws-ingress-admin-ports-allowed/resources.json | ConvertFrom-Json).Count |
         Should -BeGreaterThan 0
     }
+  }
+
+  Context 'Lab 4.4' {
+    #TODO: Proweler testing in part 3
+    BeforeAll {
+      chmod a+x /home/student/AUD507-Labs/cloudquery.io/cloudquery
+      ~/AUD507-Labs/cloudquery.io/cloudquery sync ~/AUD507-Labs/cloudquery.io/config/
+      $env:DSN='postgres://postgres:pass@localhost:5432/postgres'
+      psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/aws/views/resources.sql
+      psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/azure/views/resource.sql
+      psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/aws/policies/cis_v1.5.0/policy.sql
+      psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/azure/policies/cis_v1.3.0/policy.sql
+    }
+
+    It 'Part 4 - aws_iam_users table exists' {
+      psql "$Env:DSN" -c '\d aws_iam_users' | grep -c '^ arn' | should -BeGreaterOrEqual 1
+    }
+
+    It 'part 4 - aws_iam_users table has at least 8 rows' {
+      psql "$Env:DSN" -c 'select account_id,arn from aws_iam_users;' | grep -c 'arn:' | 
+        should -BeGreaterOrEqual 8
+    }
+
+    It 'Part 4 - GLee has two keys' {
+      psql "$Env:DSN" -c "select distinct user_name,access_key_id from aws_iam_user_access_keys where user_name like 'GLee%';" | grep -ci 'glee' | 
+        should -BeExactly 2
+    }
+
+    It 'Part 4 - Six VPCs lack the business_unit tag'{
+      $query = "select request_region,cidr_block,vpc_id
+      from aws_ec2_subnets where request_region = 'us-east-2'
+      and tags::text not like '%business_unit%';
+      "
+
+      psql "$Env:DSN" -c "$query" | grep -c '^ us-east-2' | 
+        should -BeExactly 6
+    }
+
+    It 'Part 4 - AWS benchmark has passes and fails' {
+      psql "$Env:DSN" -c "select status, count(*) as numTests from aws_policy_results group by status" | 
+        grep -c "^ pass" | Should -BeExactly 1      
+      psql "$Env:DSN" -c "select status, count(*) as numTests from aws_policy_results group by status" | 
+        grep -c "^ fail" | Should -BeExactly 1
+    }
+
+    It 'Part 4 - Azure benchmark has passes and fails' {
+      psql "$Env:DSN" -c "select status, count(*) as numTests from azure_policy_results group by status" | 
+        grep -c "^ pass" | Should -BeExactly 1
+      psql "$Env:DSN" -c "select status, count(*) as numTests from azure_policy_results group by status" | 
+        grep -c "^ fail" | Should -BeExactly 1
+    }
+
   }
 
   Context 'Lab 5.2' {
