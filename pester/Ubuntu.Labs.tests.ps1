@@ -282,6 +282,7 @@ Describe '507 Labs'{
   Context 'Lab 4.1'{
     BeforeAll {
       #Create docker bench results file
+      cd /home/student/AUD507-Labs/docker-bench-security/
       sudo bash /home/student/AUD507-Labs/docker-bench-security/docker-bench-security.sh -b -l results.txt
 
       #pull kube-bench docker container
@@ -292,7 +293,7 @@ Describe '507 Labs'{
       sudo rm -f results.txt
 
       #remove kube-bench docker container
-      docker rmi aquasec/kube-bench
+      docker rmi -f aquasec/kube-bench
     }
     It 'Part 1 - Check docker root directory' {
       $res = (docker info -f '{{ .DockerRootDir }}' | grep -c '/var/lib/docker')
