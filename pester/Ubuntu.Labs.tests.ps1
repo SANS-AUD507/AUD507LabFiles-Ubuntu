@@ -55,7 +55,7 @@ Describe '507 Labs'{
     }
   
     It 'Part 3 - Kubectl shows 4 services' {
-      $portList = ( kubectl get services | awk -F: '/NodePort/ {print $2}' | sed -e 's/\/.*//' )
+      $portList = ( microk8s kubectl get services | awk -F: '/NodePort/ {print $2}' | sed -e 's/\/.*//' )
       $portList | Should -Contain 30020
       $portList | Should -Contain 30022
       $portList | Should -Contain 30023
