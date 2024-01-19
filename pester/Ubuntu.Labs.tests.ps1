@@ -279,6 +279,31 @@ Describe '507 Labs'{
     }
   }
 
+  Context 'Lab 4.1' {
+    It 'Part 2 - Prowler IAM tests return results' {
+      prowler aws --services iam -M json -F pester
+      $prowlerResult = Get-Content ./output/pester.json | ConvertFrom-Json
+      $prowlerResult.Count | Should -BeGreaterThan 0
+      $prowlerResult | Where-Object { $_.Status -eq 'PASS' } | should -BeGreaterThan 0
+      $prowlerResult | Where-Object { $_.Status -eq 'FAIL' } | should -BeGreaterThan 0
+    }
+
+    It 'Part 3 - Custodian IAM yaml file validates' {
+      $res = (~/custodian/bin/custodian validate /home/student/AUD507-Labs/custodian/aws_iam.yaml 2>&1)
+      $res | Should -BeLike '*Configuration valid*'
+    }
+
+    It 'Part 3 - Custodian no-mfa rule returns results' {
+      (Get-Content ./pester/iam-no-mfa/resources.json | ConvertFrom-Json).Count |
+        Should -BeGreaterThan 0
+    }
+
+    It 'Part 3 - Custodian inline-policy rule returns results' {
+      (Get-Content ./pester/iam-inline-policy/resources.json | ConvertFrom-Json).Count |
+        Should -BeGreaterThan 0
+    }
+  }
+
   Context 'Lab 5.2'{
     It 'Part 2 - Nmap returns self-signed cert' {
       $issuerInfo = (sudo nmap -p443 10.50.7.20 --script ssl-cert | awk '/Issuer:/ {print$3}')

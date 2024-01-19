@@ -225,9 +225,9 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     It 'AWS credentials are working' {
       $arn = aws sts get-caller-identity | awk '/Arn/ {print $2}'
       $arn | Should -BeLike '*arn*'
-  }
+    }
 
-  It 'AWS config is set to us-east-2 region' {
+    It 'AWS config is set to us-east-2 region' {
     '/home/student/.aws/config' | should -FileContentMatch 'region = us-east-2'
     }
 
@@ -235,6 +235,16 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     '/home/student/.aws/config' | should -FileContentMatch 'output = json'
     }
   } 
+
+  Context 'Config files for labs' {
+    It 'Custodian IAM yaml file exists' {
+        '/home/student/AUD507-Labs/custodian/aws_iam.yaml' | should -Exist
+        '/home/student/AUD507-Labs/custodian/aws_iam.yaml' | should -FileContentMatch 'iam-no-mfa'
+        '/home/student/AUD507-Labs/custodian/aws_iam.yaml' | should -FileContentMatch 'iam-inline-policy'
+        
+    }
+  }
+
   Context 'Cloud CLI configuration - Azure' -skip:$skipAzure {
     It 'Azure credentials are working' {
         $username = (az account show | jq '.user.name')
