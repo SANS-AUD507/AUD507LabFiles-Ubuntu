@@ -405,8 +405,8 @@ Describe '507 Labs'{
       prowler aws --services iam -M json -F pester
       $prowlerResult = Get-Content ./output/pester.json | ConvertFrom-Json
       $prowlerResult.Count | Should -BeGreaterThan 0
-      $prowlerResult | Where-Object { $_.Status -eq 'PASS' } | should -BeGreaterThan 0
-      $prowlerResult | Where-Object { $_.Status -eq 'FAIL' } | should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'PASS' }).Count | should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'FAIL' }).Count | should -BeGreaterThan 0
     }
 
     It 'Part 3 - Custodian IAM yaml file validates' {
