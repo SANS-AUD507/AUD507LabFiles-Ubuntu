@@ -399,8 +399,8 @@ Describe '507 Labs'{
     }
 
     It 'Part 2 - Prowler IAM tests return results' {
-      prowler aws --services iam -M json -F pester
-      $prowlerResult = Get-Content ./output/pester.json | ConvertFrom-Json
+      prowler aws --services iam -M csv -F pester
+      $prowlerResult = import-csv ./output/pester.csv -delimiter ';'
       $prowlerResult.Count | Should -BeGreaterThan 0
       ($prowlerResult | Where-Object { $_.Status -eq 'PASS' }).Count | should -BeGreaterThan 0
       ($prowlerResult | Where-Object { $_.Status -eq 'FAIL' }).Count | should -BeGreaterThan 0
