@@ -55,7 +55,7 @@ Describe '507 Labs'{
     }
   
     It 'Part 3 - Kubectl shows 4 services' {
-      $portList = ( microk8s kubectl get services | awk -F: '/NodePort/ {print $2}' | sed -e 's/\/.*//' )
+      $portList = ( kubectl get services | awk -F: '/NodePort/ {print $2}' | sed -e 's/\/.*//' )
       $portList | Should -Contain 30020
       $portList | Should -Contain 30022
       $portList | Should -Contain 30023
@@ -285,6 +285,10 @@ Describe '507 Labs'{
       cd /home/student/AUD507-Labs/docker-bench-security/
       sudo bash /home/student/AUD507-Labs/docker-bench-security/docker-bench-security.sh -b -l results.txt
 
+      #create config files for kubectl to work
+      mkdir -p /home/student/.kube
+      microk8s config > /home/student/.kube/config
+
       #pull kube-bench docker container
       docker pull docker.io/aquasec/kube-bench:latest
     }
@@ -344,42 +348,42 @@ Describe '507 Labs'{
     }
 
     It 'Part 3 - kubectl client version check' {
-      $res = (microk8s kubectl version | awk '/Client.*:/ {print $3}')
+      $res = (kubectl version | awk '/Client.*:/ {print $3}')
       $res | Should -BeExactly 'v1.28.4'
     }
 
     It 'Part 3 - kubectl kustomize version check' {
-      $res = (microk8s kubectl version | awk '/Kustomize.*:/ {print $3}')
+      $res = (kubectl version | awk '/Kustomize.*:/ {print $3}')
       $res | Should -BeExactly 'v5.0.4-0.20230601165947-6ce0bf390ce3'
     }
 
     It 'Part 3 - kubectl server version check' {
-      $res = (microk8s kubectl version | awk '/Server.*:/ {print $3}')
+      $res = (kubectl version | awk '/Server.*:/ {print $3}')
       $res | Should -BeExactly 'v1.28.3'
     }
 
     It 'Part 3 - kubectl has namespaces' {
-      $res = (microk8s kubectl get namespaces | wc -l)
+      $res = (kubectl get namespaces | wc -l)
       $res | Should -BeGreaterOrEqual 2
     }
 
     It 'Part 3 - kubectl has pods in the default namespce' {
-      $res = (microk8s kubectl get pods --namespace default | wc -l)
+      $res = (kubectl get pods --namespace default | wc -l)
       $res | Should -BeExactly 4
     }
 
     It 'Part 3 - kubectl has services in the default namespce' {
-      $res = (microk8s kubectl get services --namespace default | wc -l)
+      $res = (kubectl get services --namespace default | wc -l)
       $res | Should -BeExactly 4
     }
 
     It 'Part 3 - kubectl network policy has no resources' {
-      $res = (microk8s kubectl get networkpolicy --all-namespaces | grep -c 'No resources found')
+      $res = (kubectl get networkpolicy --all-namespaces | grep -c 'No resources found')
       $res | Should -BeExactly 1
     }
 
     It 'Part 3 - kubectl network policy has no resources' {
-      $res = (microk8s kubectl get networkpolicy --all-namespaces | grep -c 'No resources found')
+      $res = (kubectl get networkpolicy --all-namespaces | grep -c 'No resources found')
       $res | Should -BeExactly 1
     }
 
