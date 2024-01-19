@@ -279,31 +279,6 @@ Describe '507 Labs'{
     }
   }
 
-  Context 'Lab 4.1' {
-    It 'Part 2 - Prowler IAM tests return results' {
-      prowler aws --services iam -M json -F pester
-      $prowlerResult = Get-Content ./output/pester.json | ConvertFrom-Json
-      $prowlerResult.Count | Should -BeGreaterThan 0
-      $prowlerResult | Where-Object { $_.Status -eq 'PASS' } | should -BeGreaterThan 0
-      $prowlerResult | Where-Object { $_.Status -eq 'FAIL' } | should -BeGreaterThan 0
-    }
-
-    It 'Part 3 - Custodian IAM yaml file validates' {
-      $res = (~/custodian/bin/custodian validate /home/student/AUD507-Labs/custodian/aws_iam.yaml 2>&1)
-      $res | Should -BeLike '*Configuration valid*'
-    }
-
-    It 'Part 3 - Custodian no-mfa rule returns results' {
-      (Get-Content ./pester/iam-no-mfa/resources.json | ConvertFrom-Json).Count |
-        Should -BeGreaterThan 0
-    }
-
-    It 'Part 3 - Custodian inline-policy rule returns results' {
-      (Get-Content ./pester/iam-inline-policy/resources.json | ConvertFrom-Json).Count |
-        Should -BeGreaterThan 0
-    }
-  }
-
   Context 'Lab 4.1'{
     BeforeAll {
       #Create docker bench results file
@@ -412,6 +387,53 @@ Describe '507 Labs'{
       $res = (docker run --pid=host -v /etc:/etc:ro -v /var:/var:ro -v /usr/local/bin/kubectl:/usr/local/mount-from-host/bin/kubectl -v ~/.kube:/.kube -e KUBECONFIG=/.kube/config -t docker.io/aquasec/kube-bench:latest run
         | tail -13 | awk '/ checks / {print $1}' )
       $res.count | Should -BeExactly 8
+    }
+  }
+
+  Context 'Lab 4.2' {
+    #Run custodian with the IAM rules
+    BeforeAll {
+      ~/custodian/bin/custodian run --output-dir ./pester /home/student/AUD507-Labs/custodian/aws_iam.yaml
+    }
+
+    It 'Part 2 - Prowler IAM tests return results' {
+      prowler aws --services iam -M json -F pester
+      $prowlerResult = Get-Content ./output/pester.json | ConvertFrom-Json
+      $prowlerResult.Count | Should -BeGreaterThan 0
+      $prowlerResult | Where-Object { $_.Status -eq 'PASS' } | should -BeGreaterThan 0
+      $prowlerResult | Where-Object { $_.Status -eq 'FAIL' } | should -BeGreaterThan 0
+    }
+
+    It 'Part 3 - Custodian IAM yaml file validates' {
+      $res = (~/custodian/bin/custodian validate /home/student/AUD507-Labs/custodian/aws_iam.yaml 2>&1)
+      $res | Should -BeLike '*Configuration valid*'
+    }
+
+    It 'Part 3 - Custodian no-mfa rule returns results' {
+      (Get-Content ./pester/iam-no-mfa/resources.json | ConvertFrom-Json).Count |
+        Should -BeGreaterThan 0
+    }
+
+    It 'Part 3 - Custodian inline-policy rule returns results' {
+      (Get-Content ./pester/iam-inline-policy/resources.json | ConvertFrom-Json).Count |
+        Should -BeGreaterThan 0
+    }
+  }
+
+  Context 'Lab 4.3'{
+    BeforeAll {
+      ~/custodian/bin/custodian run --output-dir ./pester /home/student/AUD507-Labs/custodian/aws_ingress.yaml
+    }
+    # Part 1 is Web UI for AWS - not tested.
+
+    It 'Part 2 - Custodian ingress rule validates' {
+      $res = (~/custodian/bin/custodian validate /home/student/AUD507-Labs/custodian/aws_ingress.yaml 2>&1)
+      $res | Should -BeLike '*Configuration valid*'
+    }
+
+    It 'Part 2 - Custodian ingress rule returns results' {
+      (Get-Content ./pester/aws-ingress-admin-ports-allowed/resources.json | ConvertFrom-Json).Count |
+        Should -BeGreaterThan 0
     }
   }
 

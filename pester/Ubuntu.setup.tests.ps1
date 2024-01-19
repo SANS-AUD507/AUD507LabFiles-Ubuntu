@@ -241,7 +241,11 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         '/home/student/AUD507-Labs/custodian/aws_iam.yaml' | should -Exist
         '/home/student/AUD507-Labs/custodian/aws_iam.yaml' | should -FileContentMatch 'iam-no-mfa'
         '/home/student/AUD507-Labs/custodian/aws_iam.yaml' | should -FileContentMatch 'iam-inline-policy'
-        
+    }
+    It 'Custodian Ingress yaml file exists' {
+        '/home/student/AUD507-Labs/custodian/aws_ingress.yaml' | should -Exist
+        '/home/student/AUD507-Labs/custodian/aws_ingress.yaml' | 
+            should -FileContentMatch 'aws-ingress-admin-ports-allowed'
     }
   }
 
