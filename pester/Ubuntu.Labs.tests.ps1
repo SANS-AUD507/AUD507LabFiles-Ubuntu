@@ -448,6 +448,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 4 - Terrascan tests return results' {
+      cd /home/student/AUD507-Labs/infrastructure/terraform/aws
       $terraScanResult = (terrascan scan . -o json | ConvertFrom-Json).results.scan_summary
       $terraScanResult.policies_validated | Should -Be 173
       $terraScanResult.violated_policies | Should -Be 23
@@ -461,6 +462,7 @@ Describe '507 Labs'{
     
     BeforeAll {
       chmod a+x /home/student/AUD507-Labs/cloudquery.io/cloudquery
+      Write-Host "Fetching cloudquery data (slow)"
       ~/AUD507-Labs/cloudquery.io/cloudquery sync ~/AUD507-Labs/cloudquery.io/config/
       $env:DSN='postgres://postgres:pass@localhost:5432/postgres'
       psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/aws/views/resources.sql
@@ -470,9 +472,9 @@ Describe '507 Labs'{
     }
 
     It 'Part 3 - Prowler AWS has compliance tests' {
-      $prowlerResult = (prowler aws --list-compliance)
-      $prowlerResult | should -FileContentMatch 'cis_1.5_aws'
-      $prowlerResult | should -FileContentMatch 'cis_2.0_aws'
+      prowler aws --list-compliance > ./prowler.txt
+      ./prowler.txt | should -FileContentMatch 'cis_1.5_aws'
+      ./prowler.txt | should -FileContentMatch 'cis_2.0_aws'
     }
 
     It 'Part 3 - Prowler AWS compliance tests return results' {

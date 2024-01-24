@@ -245,13 +245,13 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     It 'Custodian Ingress yaml file exists' {
         '/home/student/AUD507-Labs/custodian/aws_ingress.yaml' | should -Exist
         '/home/student/AUD507-Labs/custodian/aws_ingress.yaml' | 
-            should -FileContentMatch 'aws_db_instance'
+        should -FileContentMatch 'aws-ingress-admin-ports-allowed'
     }
 
     It 'Terraform main.tf file exists' {
         '/home/student/AUD507-Labs/infrastructure/terraform/aws/modules/storage/main.tf' | should -Exist
-        '/home/student/AUD507-Labs/infrastructure/terraform/aws/modules/storage/main.tf' | 
-            should -FileContentMatch 'aws-ingress-admin-ports-allowed'
+        '/home/student/AUD507-Labs/infrastructure/terraform/aws/modules/storage/main.tf' |             
+        should -FileContentMatch 'aws_db_instance'
     }
     #TODO: Check for cloudquery files from lab 4.4 - part 4
   }
