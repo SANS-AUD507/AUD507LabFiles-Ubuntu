@@ -422,7 +422,6 @@ Describe '507 Labs'{
     }
   }
 
-  # TODO: Do the other parts of this lab
   Context 'Lab 4.3'{
     BeforeAll {
       ~/custodian/bin/custodian run --output-dir ./pester /home/student/AUD507-Labs/custodian/aws_ingress.yaml
@@ -439,10 +438,27 @@ Describe '507 Labs'{
       (Get-Content ./pester/aws-ingress-admin-ports-allowed/resources.json | ConvertFrom-Json).Count |
         Should -BeGreaterThan 0
     }
+
+    It 'Part 3 - Prowler AWS tests return results' {
+      prowler aws --checks-file ec2checks.json -f us-east-2 -M csv -F pester
+      $prowlerResult = import-csv ./output/pester.csv -delimiter ';'
+      $prowlerResult.Count | Should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'PASS' }).Count | should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'FAIL' }).Count | should -BeGreaterThan 0
+    }
+
+    It 'Part 4 - Terrascan tests return results' {
+      $terraScanResult = (terrascan scan . -o json | ConvertFrom-Json).results.scan_summary
+      $terraScanResult.policies_validated | Should -Be 173
+      $terraScanResult.violated_policies | Should -Be 23
+      $terraScanResult.low | Should -Be 4
+      $terraScanResult.medium | Should -Be 8
+      $terraScanResult.high | Should -Be 11
+    }
   }
 
   Context 'Lab 4.4' {
-    #TODO: Proweler testing in part 3
+    
     BeforeAll {
       chmod a+x /home/student/AUD507-Labs/cloudquery.io/cloudquery
       ~/AUD507-Labs/cloudquery.io/cloudquery sync ~/AUD507-Labs/cloudquery.io/config/
@@ -451,6 +467,20 @@ Describe '507 Labs'{
       psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/azure/views/resource.sql
       psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/aws/policies/cis_v1.5.0/policy.sql
       psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/azure/policies/cis_v1.3.0/policy.sql
+    }
+
+    It 'Part 3 - Prowler AWS has compliance tests' {
+      $prowlerResult = (prowler aws --list-compliance)
+      $prowlerResult | should -FileContentMatch 'cis_1.5_aws'
+      $prowlerResult | should -FileContentMatch 'cis_2.0_aws'
+    }
+
+    It 'Part 3 - Prowler AWS compliance tests return results' {
+      prowler aws --compliance cis_2.0_aws -f us-east-2 -M csv -F pester
+      $prowlerResult = import-csv ./output/pester.csv -delimiter ';'
+      $prowlerResult.Count | Should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'PASS' }).Count | should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'FAIL' }).Count | should -BeGreaterThan 0
     }
 
     It 'Part 4 - aws_iam_users table exists' {
