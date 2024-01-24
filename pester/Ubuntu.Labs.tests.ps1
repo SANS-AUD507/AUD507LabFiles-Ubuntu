@@ -473,8 +473,8 @@ Describe '507 Labs'{
 
     It 'Part 3 - Prowler AWS has compliance tests' {
       prowler aws --list-compliance > ./prowler.txt
-      ./prowler.txt | should -FileContentMatch 'cis_1.5_aws'
-      ./prowler.txt | should -FileContentMatch 'cis_2.0_aws'
+      './prowler.txt' | should -FileContentMatch 'cis_1.5_aws'
+      './prowler.txt' | should -FileContentMatch 'cis_2.0_aws'
     }
 
     It 'Part 3 - Prowler AWS compliance tests return results' {
