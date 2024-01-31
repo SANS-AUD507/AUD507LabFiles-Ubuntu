@@ -243,6 +243,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     }
   } 
 
+  # TODO: Move to lab tests :)
   Context 'Config files for labs' {
     It 'Custodian IAM yaml file exists' {
         '/home/student/AUD507-Labs/custodian/aws_iam.yaml' | should -Exist
