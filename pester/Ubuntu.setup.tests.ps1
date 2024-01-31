@@ -261,21 +261,21 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         should -FileContentMatch 'aws_db_instance'
     }
 
-    It 'Cloudquery.io aws.yaml file exists' {
-        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml'
-        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml' |             
+    It 'Cloudquery.io aws.yml file exists' {
+        '/home/student/AUD507-Labs/cloudquery.io/config/aws.yml'
+        '/home/student/AUD507-Labs/cloudquery.io/config/aws.yml' |             
         should -FileContentMatch 'cloudquery/aws'
     }
 
-    It 'Cloudquery.io azure.yaml file exists' {
-        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml'
-        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml' |             
+    It 'Cloudquery.io azure.yml file exists' {
+        '/home/student/AUD507-Labs/cloudquery.io/config/azure.yml'
+        '/home/student/AUD507-Labs/cloudquery.io/config/azure.yml' |             
         should -FileContentMatch 'cloudquery/azure'
     }
 
-    It 'Cloudquery.io postgresql.yaml file exists' {
-        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml'
-        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml' |             
+    It 'Cloudquery.io postgresql.yml file exists' {
+        '/home/student/AUD507-Labs/cloudquery.io/config/postgresql.yml'
+        '/home/student/AUD507-Labs/cloudquery.io/config/postgresql.yml' |             
         should -FileContentMatch 'cloudquery/postgresql'
     }
   }
