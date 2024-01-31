@@ -65,8 +65,6 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         $localPorts | Should -Contain '10.50.7.50:443'
     }
 
-    #TODO: Check for port 507+content
-
     It 'Nginx BWApp' {
         $localPorts | Should -Contain '10.50.7.22:80'
     }
@@ -86,6 +84,10 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
 
     It 'Nessus' {
         $localPorts | Should -Contain '10.50.7.29:8834'
+    }
+
+    It 'Workbook' {
+        $localPorts | Should -Contain '0.0.0.0:507'
     }
   }
 
@@ -135,6 +137,11 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     It 'Nessus startup page' {
         $res = (curl -s -k https://10.50.7.29:8834 | grep -ci nessus)
         $res | Should -BeGreaterThan 0
+    }
+
+    It 'Workbook home page' {
+        $res = (curl -s http://10.50.7.20:507/workbook/ | grep -ci aud507)
+        $res | Should -BeGreaterOrEqual 1
     }
   }
 
@@ -253,7 +260,24 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         '/home/student/AUD507-Labs/infrastructure/terraform/aws/modules/storage/main.tf' |             
         should -FileContentMatch 'aws_db_instance'
     }
-    #TODO: Check for cloudquery files from lab 4.4 - part 4
+
+    It 'Cloudquery.io aws.yaml file exists' {
+        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml'
+        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml' |             
+        should -FileContentMatch 'cloudquery/aws'
+    }
+
+    It 'Cloudquery.io azure.yaml file exists' {
+        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml'
+        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml' |             
+        should -FileContentMatch 'cloudquery/azure'
+    }
+
+    It 'Cloudquery.io postgresql.yaml file exists' {
+        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml'
+        '/home/student/AUD507-Labs/AUD507-Labs/cloudquery.io/config/aws.yml' |             
+        should -FileContentMatch 'cloudquery/postgresql'
+    }
   }
 
   Context 'Cloud CLI configuration - Azure' -skip:$skipAzure {

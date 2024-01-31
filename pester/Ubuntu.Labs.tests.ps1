@@ -202,7 +202,6 @@ Describe '507 Labs'{
   }
 
   Context 'Lab 3.3' {
-    #TODO: Check file hashes on all the log files
     AfterAll {
       #Delete the rules we created
       sudo auditctl -D
@@ -384,7 +383,6 @@ Describe '507 Labs'{
       $res | Should -BeExactly 1
     }
 
-    # TODO: revisit in the future?
     It 'Part 4 - kube-bench returns results' {
       $res = (docker run --pid=host -v /etc:/etc:ro -v /var:/var:ro -v /usr/local/bin/kubectl:/usr/local/mount-from-host/bin/kubectl -v ~/.kube:/.kube -e KUBECONFIG=/.kube/config -t docker.io/aquasec/kube-bench:latest run
         | tail -13 | awk '/ checks / {print $1}' )
