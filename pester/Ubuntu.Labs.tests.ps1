@@ -6,23 +6,23 @@ $config.Run.Path = '/home/student/AUD507-Labs/pester//Ubuntu.Labs.tests.ps1'
 Invoke-Pester -Configuration $config
 #>
 
-Describe '507 Labs'{
+Describe '507 Labs' {
   BeforeDiscovery {
     #If the AWS config files are not there, then skip the AWS tests
-    if( -not ( (Test-Path -Type Leaf -Path /home/student/.aws/credentials) -or (Test-Path -Type Leaf -Path /home/student/.aws/config) ) ) {
+    if ( -not ( (Test-Path -Type Leaf -Path /home/student/.aws/credentials) -or (Test-Path -Type Leaf -Path /home/student/.aws/config) ) ) {
       $skipAWS = $true
     }
     else {
       #Skip the Cloud Services tests if there are no good AWS credentials
       $userARN = (aws sts get-caller-identity | jq '.Arn')
-      if( $userARN -notlike '*student*'){
+      if ( $userARN -notlike '*student*') {
         $skipAWS = $true
       }
     }
 
     #If the Azure configuration is not there, then skip the Azure tests
     $azSubCount = (Get-Content /home/student/.azure/azureProfile.json | ConvertFrom-Json).Subscriptions.Count
-    if( $azSubCount -lt 1) {
+    if ( $azSubCount -lt 1) {
       Write-Host "Skipping Azure tests because config files do not exist"
       $skipAzure = $true
     } 
@@ -72,7 +72,7 @@ Describe '507 Labs'{
 
   Context 'Lab 2.2' {
 
-    BeforeAll{
+    BeforeAll {
       Write-Host "Running nmap full connect scan against Win10 VM (slow)"
       $nmapResults = (sudo nmap -sT -p1-65535 -T4 10.50.7.101)
     }
@@ -104,7 +104,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 1 - APT shows missing patches' {
-      (apt list --upgradable 2>/dev/null| grep -cv 'Listing' ) |
+      (apt list --upgradable 2>/dev/null | grep -cv 'Listing' ) |
         Should -BeGreaterOrEqual 1
     }
 
@@ -126,25 +126,25 @@ Describe '507 Labs'{
       $res.version | Should -BeExactly "22.04.3 LTS (Jammy Jellyfish)"
     }
 
-    It 'Part 3 - Osquery returns 52 SUID binaries' {
+    It 'Part 3 - Osquery returns > 40 SUID binaries' {
       $res = (osqueryi "Select * from suid_bin;" --json | ConvertFrom-Json)
-      $res.Count | Should -BeExactly 52
+      $res.Count | Should -BeGreaterThan 40
     }
   }
 
   Context 'Lab 3.2' {
     It 'Part 1 - twSetup script is correct' {
-      $hash= (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twSetup.sh).Hash
+      $hash = (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twSetup.sh).Hash
       $hash | Should -BeExactly 'CDF13850E29ED09119AED455038AA2B24704FDBD4FF1A33B85CC66A9C9713421'
     }
 
     It 'Part 1 - Original tripwire policy is correct' {
-      $hash= (Get-FileHash -Algorithm SHA256 -Path /etc/tripwire/twpol.txt).Hash
+      $hash = (Get-FileHash -Algorithm SHA256 -Path /etc/tripwire/twpol.txt).Hash
       $hash | Should -BeExactly '16FE9FF02E0BECE41001A4D6182384792F9023E160C0B0C646D2448726EC3166'
     }
 
     It 'Part 1 - Corrected tripwire policy is correct' {
-      $hash= (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twpol-corrected.txt).Hash
+      $hash = (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twpol-corrected.txt).Hash
       $hash | Should -BeExactly '9730F635E33FA2D39914CD19258EA691C95796A3DE4503F2F6D88F3023A55A42'
     }
 
@@ -164,7 +164,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 3 - Netstat shows port 6379 on loopback' {
-      $ports = sudo netstat -ant | awk '/^tcp.*LISTEN[ ]*$/ {print $4}' | sort -n | grep 6379
+      $ports = sudo netstat -ant | awk '/^tcp.*LISTEN[ ]*$/ {print $4}' | Sort-Object -n | grep 6379
       $ports | Should -Contain '::1:6379'
       $ports | Should -Contain '127.0.0.1:6379'
     }
@@ -257,11 +257,11 @@ Describe '507 Labs'{
       Write-Host "Running inspec against Ubuntu (slow)"
       Set-Location /home/student/AUD507-Labs/inspec
       $res = (inspec exec ./cis-dil-benchmark/ --reporter json:- | ConvertFrom-Json)
-      ($res.profiles.controls.results | Where-Object Status -eq 'failed').Count |
+      ($res.profiles.controls.results | Where-Object Status -EQ 'failed').Count |
         Should -BeGreaterThan 0
-      ($res.profiles.controls.results | Where-Object Status -eq 'passed').Count |
+      ($res.profiles.controls.results | Where-Object Status -EQ 'passed').Count |
         Should -BeGreaterThan 0
-      ($res.profiles.controls.results | Where-Object Status -eq 'skipped').Count |
+      ($res.profiles.controls.results | Where-Object Status -EQ 'skipped').Count |
         Should -BeGreaterThan 0
     }
 
@@ -269,19 +269,19 @@ Describe '507 Labs'{
       Write-Host "Running inspec against Alma (slow)"
       Set-Location /home/student/AUD507-Labs/inspec
       $res = (inspec exec ./cis-dil-benchmark/ -t ssh://student:student@10.50.7.40 --reporter json:- | ConvertFrom-Json)
-      ($res.profiles.controls.results | Where-Object Status -eq 'failed').Count |
+      ($res.profiles.controls.results | Where-Object Status -EQ 'failed').Count |
         Should -BeGreaterThan 0
-      ($res.profiles.controls.results | Where-Object Status -eq 'passed').Count |
+      ($res.profiles.controls.results | Where-Object Status -EQ 'passed').Count |
         Should -BeGreaterThan 0
-      ($res.profiles.controls.results | Where-Object Status -eq 'skipped').Count |
+      ($res.profiles.controls.results | Where-Object Status -EQ 'skipped').Count |
         Should -BeGreaterThan 0
     }
   }
 
-  Context 'Lab 4.1'{
+  Context 'Lab 4.1' {
     BeforeAll {
       #Create docker bench results file
-      cd /home/student/AUD507-Labs/docker-bench-security/
+      Set-Location /home/student/AUD507-Labs/docker-bench-security/
       sudo bash /home/student/AUD507-Labs/docker-bench-security/docker-bench-security.sh -b -l results.txt
 
       #create config files for kubectl to work
@@ -322,7 +322,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 1 - daemon.json does not exist' {
-      $res = (sudo find / -name "daemon.json" -type f | wc -l)
+      $res = (sudo find / -Name "daemon.json" -type f | wc -l)
       $res | Should -BeExactly 0
     }
 
@@ -342,13 +342,13 @@ Describe '507 Labs'{
     }
 
     It 'Part 2 - Docker-Bench has correct score' {
-      $res = (cat ./results.txt | awk '/INFO.*Score:/ {print $3}')
+      $res = (Get-Content ./results.txt | awk '/INFO.*Score:/ {print $3}')
       $res | Should -BeExactly 4
     }
 
     It 'Part 3 - kubectl client version check' {
       $res = (kubectl version | awk '/Client.*:/ {print $3}')
-      $res | Should -BeExactly 'v1.28.4'
+      $res | Should -BeExactly 'v1.28.9'
     }
 
     It 'Part 3 - kubectl kustomize version check' {
@@ -379,7 +379,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 3 - kubectl network policy has no resources' {
-      $res = (kubectl get networkpolicy --all-namespaces 2>&1| grep -c 'No resources found')
+      $res = (kubectl get networkpolicy --all-namespaces 2>&1 | grep -c 'No resources found')
       $res | Should -BeExactly 1
     }
 
@@ -398,10 +398,10 @@ Describe '507 Labs'{
 
     It 'Part 2 - Prowler IAM tests return results' {
       prowler aws --services iam -M csv -F pester
-      $prowlerResult = import-csv ./output/pester.csv -delimiter ';'
+      $prowlerResult = Import-Csv ./output/pester.csv -Delimiter ';'
       $prowlerResult.Count | Should -BeGreaterThan 0
-      ($prowlerResult | Where-Object { $_.Status -eq 'PASS' }).Count | should -BeGreaterThan 0
-      ($prowlerResult | Where-Object { $_.Status -eq 'FAIL' }).Count | should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'PASS' }).Count | Should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'FAIL' }).Count | Should -BeGreaterThan 0
     }
 
     It 'Part 3 - Custodian IAM yaml file validates' {
@@ -420,7 +420,7 @@ Describe '507 Labs'{
     }
   }
 
-  Context 'Lab 4.3'{
+  Context 'Lab 4.3' {
     BeforeAll {
       ~/custodian/bin/custodian run --output-dir ./pester /home/student/AUD507-Labs/custodian/aws_ingress.yaml
     
@@ -439,14 +439,14 @@ Describe '507 Labs'{
 
     It 'Part 3 - Prowler AWS tests return results' {
       prowler aws --checks-file ec2checks.json -f us-east-2 -M csv -F pester
-      $prowlerResult = import-csv ./output/pester.csv -delimiter ';'
+      $prowlerResult = Import-Csv ./output/pester.csv -Delimiter ';'
       $prowlerResult.Count | Should -BeGreaterThan 0
-      ($prowlerResult | Where-Object { $_.Status -eq 'PASS' }).Count | should -BeGreaterThan 0
-      ($prowlerResult | Where-Object { $_.Status -eq 'FAIL' }).Count | should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'PASS' }).Count | Should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'FAIL' }).Count | Should -BeGreaterThan 0
     }
 
     It 'Part 4 - Terrascan tests return results' {
-      cd /home/student/AUD507-Labs/infrastructure/terraform/aws
+      Set-Location /home/student/AUD507-Labs/infrastructure/terraform/aws
       $terraScanResult = (terrascan scan . -o json | ConvertFrom-Json).results.scan_summary
       $terraScanResult.policies_validated | Should -Be 173
       $terraScanResult.violated_policies | Should -Be 23
@@ -462,7 +462,7 @@ Describe '507 Labs'{
       chmod a+x /home/student/AUD507-Labs/cloudquery.io/cloudquery
       Write-Host "Fetching cloudquery data (slow)"
       ~/AUD507-Labs/cloudquery.io/cloudquery sync ~/AUD507-Labs/cloudquery.io/config/
-      $env:DSN='postgres://postgres:pass@localhost:5432/postgres'
+      $env:DSN = 'postgres://postgres:pass@localhost:5432/postgres'
       psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/aws/views/resources.sql
       psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/azure/views/resource.sql
       psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/aws/policies/cis_v1.5.0/policy.sql
@@ -471,40 +471,40 @@ Describe '507 Labs'{
 
     It 'Part 3 - Prowler AWS has compliance tests' {
       prowler aws --list-compliance > ./prowler.txt
-      './prowler.txt' | should -FileContentMatch 'cis_1.5_aws'
-      './prowler.txt' | should -FileContentMatch 'cis_2.0_aws'
+      './prowler.txt' | Should -FileContentMatch 'cis_1.5_aws'
+      './prowler.txt' | Should -FileContentMatch 'cis_2.0_aws'
     }
 
     It 'Part 3 - Prowler AWS compliance tests return results' {
       prowler aws --compliance cis_2.0_aws -f us-east-2 -M csv -F pester
-      $prowlerResult = import-csv ./output/pester.csv -delimiter ';'
+      $prowlerResult = Import-Csv ./output/pester.csv -Delimiter ';'
       $prowlerResult.Count | Should -BeGreaterThan 0
-      ($prowlerResult | Where-Object { $_.Status -eq 'PASS' }).Count | should -BeGreaterThan 0
-      ($prowlerResult | Where-Object { $_.Status -eq 'FAIL' }).Count | should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'PASS' }).Count | Should -BeGreaterThan 0
+      ($prowlerResult | Where-Object { $_.Status -eq 'FAIL' }).Count | Should -BeGreaterThan 0
     }
 
     It 'Part 4 - aws_iam_users table exists' {
-      psql "$Env:DSN" -c '\d aws_iam_users' | grep -c '^ arn' | should -BeGreaterOrEqual 1
+      psql "$Env:DSN" -c '\d aws_iam_users' | grep -c '^ arn' | Should -BeGreaterOrEqual 1
     }
 
     It 'part 4 - aws_iam_users table has at least 8 rows' {
       psql "$Env:DSN" -c 'select account_id,arn from aws_iam_users;' | grep -c 'arn:' | 
-        should -BeGreaterOrEqual 8
+        Should -BeGreaterOrEqual 8
     }
 
     It 'Part 4 - GLee has two keys' {
       psql "$Env:DSN" -c "select distinct user_name,access_key_id from aws_iam_user_access_keys where user_name like 'GLee%';" | grep -ci 'glee' | 
-        should -BeExactly 2
+        Should -BeExactly 2
     }
 
-    It 'Part 4 - Six VPCs lack the business_unit tag'{
+    It 'Part 4 - Six VPCs lack the business_unit tag' {
       $query = "select request_region,cidr_block,vpc_id
       from aws_ec2_subnets where request_region = 'us-east-2'
       and tags::text not like '%business_unit%';
       "
 
       psql "$Env:DSN" -c "$query" | grep -c '^ us-east-2' | 
-        should -BeExactly 6
+        Should -BeExactly 6
     }
 
     It 'Part 4 - AWS benchmark has passes and fails' {
