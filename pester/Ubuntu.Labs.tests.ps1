@@ -343,7 +343,7 @@ Describe '507 Labs' {
 
     It 'Part 2 - Docker-Bench has correct score' {
       $res = (Get-Content ./results.txt | awk '/INFO.*Score:/ {print $3}')
-      $res | Should -BeExactly 4
+      $res | Should -Be '4'
     }
 
     It 'Part 3 - kubectl client version check' {
