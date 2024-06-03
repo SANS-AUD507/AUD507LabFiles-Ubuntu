@@ -164,7 +164,7 @@ Describe '507 Labs' {
     }
 
     It 'Part 3 - Netstat shows port 6379 on loopback' {
-      $ports = sudo netstat -ant | awk '/^tcp.*LISTEN[ ]*$/ {print $4}' | Sort-Object -n | grep 6379
+      $ports = sudo netstat -ant | awk '/^tcp.*LISTEN[ ]*$/ {print $4}' | grep 6379
       $ports | Should -Contain '::1:6379'
       $ports | Should -Contain '127.0.0.1:6379'
     }
