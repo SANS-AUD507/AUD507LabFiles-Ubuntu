@@ -175,7 +175,7 @@ SIG_HI        = 100 ;                # Critical files that are
 {
         /var/lock               -> $(SEC_CONFIG) ;
         /var/run                -> $(SEC_CONFIG) ; # daemon PIDs
-        /var/log                -> $(SEC_CONFIG) ;
+        /var/log                -> $(IgnoreAll) ;
 }
 
 # These files change the behavior of the root account
