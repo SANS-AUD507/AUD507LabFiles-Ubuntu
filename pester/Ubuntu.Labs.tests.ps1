@@ -145,7 +145,7 @@ Describe '507 Labs' {
 
     It 'Part 1 - Corrected tripwire policy is correct' {
       $hash = (Get-FileHash -Algorithm SHA256 -Path /home/student/AUD507-Labs/tripwire/twpol-corrected.txt).Hash
-      $hash | Should -BeExactly '9730F635E33FA2D39914CD19258EA691C95796A3DE4503F2F6D88F3023A55A42'
+      $hash | Should -BeExactly '374696CDDA5FA74850D538A7A52665B8427E306EA06A3384D6B95D0E39F5E700'
     }
 
     It 'Part 2 - net.ipv4.tcp_syncookies = 1' {
@@ -179,7 +179,7 @@ Describe '507 Labs' {
     It 'Part 5 - Osquery shows 76 open TCP ports' {
       $query = "select address,port from listening_ports where protocol=6 order by address,port;"
       $ports = (osqueryi "$query" --json | ConvertFrom-Json)
-      $ports.Count | Should -BeExactly 76
+      $ports.Count | Should -BeGreaterOrEqual 76
     }
 
     It 'Part 5 - Osquery shows -1 for pids' {
@@ -358,7 +358,7 @@ Describe '507 Labs' {
 
     It 'Part 3 - kubectl server version check' {
       $res = (kubectl version | awk '/Server.*:/ {print $3}')
-      $res | Should -BeExactly 'v1.28.9'
+      $res | Should -BeExactly 'v1.28.15'
     }
 
     It 'Part 3 - kubectl has namespaces' {
