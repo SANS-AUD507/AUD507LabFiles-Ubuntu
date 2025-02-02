@@ -366,7 +366,7 @@ Describe '507 Labs' {
       $res | Should -BeGreaterOrEqual 2
     }
 
-    It 'Part 3 - kubectl has pods in the default namespce' {
+    It 'Part 3 - kubectl has pods in the default namespace' {
       $res = (kubectl get pods --namespace default | wc -l)
       #4 services + header row = 5
       $res | Should -BeExactly 5
