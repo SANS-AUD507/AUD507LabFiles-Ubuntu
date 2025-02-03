@@ -460,6 +460,14 @@ Describe '507 Labs' {
     
     BeforeAll {
       chmod a+x /home/student/AUD507-Labs/cloudquery.io/cloudquery
+      #Clear out the tested tables, in case you've synced before with other accounts
+      Write-Host "Deleting old data from tested cloudquery tables"
+      psql "$Env:DSN" -c 'delete from aws_iam_users;'
+      psql "$Env:DSN" -c 'delete from aws_iam_user_access_keys;'
+      psql "$Env:DSN" -c 'delete from aws_ec2_subnets;'
+      psql "$Env:DSN" -c 'delete from aws_policy_results;'
+      psql "$Env:DSN" -c 'delete from azure_policy_results;'
+      
       Write-Host "Fetching cloudquery data (slow)"
       ~/AUD507-Labs/cloudquery.io/cloudquery sync ~/AUD507-Labs/cloudquery.io/config/
       $env:DSN = 'postgres://postgres:pass@localhost:5432/postgres'
@@ -467,6 +475,7 @@ Describe '507 Labs' {
       psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/azure/views/resource.sql
       psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/aws/policies/cis_v1.5.0/policy.sql
       psql "$Env:DSN" -f /home/student/AUD507-Labs/cloudquery.io/azure/policies/cis_v1.3.0/policy.sql
+
     }
 
     It 'Part 3 - Prowler AWS has compliance tests' {
