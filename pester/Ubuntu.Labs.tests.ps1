@@ -488,7 +488,7 @@ Describe '507 Labs' {
     }
 
     It 'part 4 - aws_iam_users table has at least 8 rows' {
-      psql "$Env:DSN" -c 'select account_id,arn from aws_iam_users;' | grep -c 'arn:' | 
+      [int](psql "$Env:DSN" -c 'select account_id,arn from aws_iam_users;' | grep -c 'arn:') | 
         Should -BeGreaterOrEqual 8
     }
 
@@ -503,7 +503,7 @@ Describe '507 Labs' {
       and tags::text not like '%business_unit%';
       "
 
-      psql "$Env:DSN" -c "$query" | grep -c '^ us-east-2' | 
+      [int](psql "$Env:DSN" -c "$query" | grep -c '^ us-east-2') | 
         Should -BeExactly 6
     }
 
