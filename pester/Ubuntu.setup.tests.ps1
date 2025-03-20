@@ -1,10 +1,10 @@
 
 #Invoke this test on Ubuntu with these commands (in pwsh):
 <#
-Set-Location /home/student/AUD507-Labs/pester/
+Set-Location /home/student/Aud1-Labs/pester/
 $config=New-PesterConfiguration
 $config.Output.Verbosity='detailed'
-$config.Run.Path='/home/student/AUD507-Labs/pester/Ubuntu.Setup.tests.ps1'
+$config.Run.Path='/home/student/Aud1-Labs/pester/Ubuntu.Setup.tests.ps1'
 Invoke-Pester -Configuration $config
 #>
 Describe 'Lab Setup tests for 507Ubuntu VM' {
@@ -246,37 +246,37 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     # TODO: Move to lab tests :)
     Context 'Config files for labs' {
         It 'Custodian IAM yaml file exists' {
-            '/home/student/AUD507-Labs/custodian/aws_iam.yaml' | Should -Exist
-            '/home/student/AUD507-Labs/custodian/aws_iam.yaml' | Should -FileContentMatch 'iam-no-mfa'
-            '/home/student/AUD507-Labs/custodian/aws_iam.yaml' | Should -FileContentMatch 'iam-inline-policy'
+            '/home/student/Aud1-Labs/custodian/aws_iam.yaml' | Should -Exist
+            '/home/student/Aud1-Labs/custodian/aws_iam.yaml' | Should -FileContentMatch 'iam-no-mfa'
+            '/home/student/Aud1-Labs/custodian/aws_iam.yaml' | Should -FileContentMatch 'iam-inline-policy'
         }
         It 'Custodian Ingress yaml file exists' {
-            '/home/student/AUD507-Labs/custodian/aws_ingress.yaml' | Should -Exist
-            '/home/student/AUD507-Labs/custodian/aws_ingress.yaml' | 
+            '/home/student/Aud1-Labs/custodian/aws_ingress.yaml' | Should -Exist
+            '/home/student/Aud1-Labs/custodian/aws_ingress.yaml' | 
                 Should -FileContentMatch 'aws-ingress-admin-ports-allowed'
         }
 
         It 'Terraform main.tf file exists' {
-            '/home/student/AUD507-Labs/infrastructure/terraform/aws/modules/storage/main.tf' | Should -Exist
-            '/home/student/AUD507-Labs/infrastructure/terraform/aws/modules/storage/main.tf' |             
+            '/home/student/Aud1-Labs/infrastructure/terraform/aws/modules/storage/main.tf' | Should -Exist
+            '/home/student/Aud1-Labs/infrastructure/terraform/aws/modules/storage/main.tf' |             
                 Should -FileContentMatch 'aws_db_instance'
         }
 
         It 'Cloudquery.io aws.yml file exists' {
-            '/home/student/AUD507-Labs/cloudquery.io/config/aws.yml'
-            '/home/student/AUD507-Labs/cloudquery.io/config/aws.yml' |             
+            '/home/student/Aud1-Labs/cloudquery.io/config/aws.yml'
+            '/home/student/Aud1-Labs/cloudquery.io/config/aws.yml' |             
                 Should -FileContentMatch 'cloudquery/aws'
         }
 
         It 'Cloudquery.io azure.yml file exists' {
-            '/home/student/AUD507-Labs/cloudquery.io/config/azure.yml'
-            '/home/student/AUD507-Labs/cloudquery.io/config/azure.yml' |             
+            '/home/student/Aud1-Labs/cloudquery.io/config/azure.yml'
+            '/home/student/Aud1-Labs/cloudquery.io/config/azure.yml' |             
                 Should -FileContentMatch 'cloudquery/azure'
         }
 
         It 'Cloudquery.io postgresql.yml file exists' {
-            '/home/student/AUD507-Labs/cloudquery.io/config/postgresql.yml'
-            '/home/student/AUD507-Labs/cloudquery.io/config/postgresql.yml' |             
+            '/home/student/Aud1-Labs/cloudquery.io/config/postgresql.yml'
+            '/home/student/Aud1-Labs/cloudquery.io/config/postgresql.yml' |             
                 Should -FileContentMatch 'cloudquery/postgresql'
         }
     }
