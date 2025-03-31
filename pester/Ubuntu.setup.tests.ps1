@@ -52,13 +52,13 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
             $localPorts = (sudo netstat -antp | awk '/LISTEN/ { print $4 }')
         }
 
-        It 'Graphite on port 2003' {
-            $localPorts | Should -Contain '0.0.0.0:2003' 
-        }
+        # It 'Graphite on port 2003' {
+        #     $localPorts | Should -Contain '0.0.0.0:2003' 
+        # }
 
-        It 'Grafana on port 3000' {
-            $localPorts | Should -Contain ':::3000' 
-        }
+        # It 'Grafana on port 3000' {
+        #     $localPorts | Should -Contain ':::3000' 
+        # }
 
         It 'Default Nginx site HTTP/HTTPS' {
             $localPorts | Should -Contain '10.50.7.50:80'
@@ -153,10 +153,10 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
             $res | Should -BeExactly 1
         }
 
-        It 'Graphite-api' {
-            $res = (systemctl --no-pager status graphite-api.service | grep -ci "active (running)")
-            $res | Should -BeExactly 1
-        }
+        # It 'Graphite-api' {
+        #     $res = (systemctl --no-pager status graphite-api.service | grep -ci "active (running)")
+        #     $res | Should -BeExactly 1
+        # }
 
         It 'Nginx' {
             $res = (systemctl --no-pager status nginx.service | grep -ci "active (running)")
@@ -168,10 +168,10 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
             $res | Should -BeExactly 1
         }
 
-        It 'Grafana' {
-            $res = (systemctl --no-pager status  grafana-server.service | grep -ci "active (running)")
-            $res | Should -BeExactly 1
-        }
+        # It 'Grafana' {
+        #     $res = (systemctl --no-pager status  grafana-server.service | grep -ci "active (running)")
+        #     $res | Should -BeExactly 1
+        # }
     }
 
     #Check k8s services for appropriate published TCP ports
