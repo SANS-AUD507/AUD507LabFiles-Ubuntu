@@ -9,7 +9,7 @@ Access is available via SSH from the 507Win10 student VM.
 
 EOF
 
-IP=$(ip a show ens38 | awk '/inet[^6]/ {print $2}' | grep -v "^10\.50" | sed -e "s/\/24//")
+IP=$(ip a show eth0 | awk '/inet[^6]/ {print $2}' | grep -v "^10\.50" | sed -e "s/\/24//")
 
 echo  >> /etc/issue
 echo "####################################################################" >> /etc/issue
