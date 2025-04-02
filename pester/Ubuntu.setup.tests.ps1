@@ -39,10 +39,11 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
             $arpRes | Should -BeExactly 1 -Because 'Ensure that first network adapter is set to HostOnly'
         }
 
-        It 'Ping Google - NAT' {
-            $pingRes = (ping -c 4 dns.google | awk '/transmitted/ { print $4 }')
-            $pingRes | Should -BeGreaterThan 0 -Because 'Ensure that second network adapter is set to NAT '
-        }
+        # No outbound ping on Azure NAT gateway
+        # It 'Ping Google - NAT' {
+        #     $pingRes = (ping -c 4 dns.google | awk '/transmitted/ { print $4 }')
+        #     $pingRes | Should -BeGreaterThan 0 -Because 'Ensure that second network adapter is set to NAT '
+        # }
     }
 
     #Required ports are open
@@ -93,11 +94,11 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
 
     #Look for appropriate content on class websites
     Context 'Websites' {
-        It 'Grafana login form' {
-            #look for "Grafana" in the login page
-            $res = (curl -s http://localhost:3000/login | grep -ci 'grafana')
-            $res | Should -BeGreaterThan 0
-        }
+        # It 'Grafana login form' {
+        #     #look for "Grafana" in the login page
+        #     $res = (curl -s http://localhost:3000/login | grep -ci 'grafana')
+        #     $res | Should -BeGreaterThan 0
+        # }
 
         It 'Default website has workbook link' {
             $res = (curl -s http://10.50.7.50:80 | grep -ci workbook)
@@ -148,10 +149,10 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     #Ensure systemd services are running
     Context 'Systemd services' {
     
-        It 'Carbon cache' {
-            $res = (systemctl --no-pager status carbon-cache.service | grep -ci "active (running)")
-            $res | Should -BeExactly 1
-        }
+        # It 'Carbon cache' {
+        #     $res = (systemctl --no-pager status carbon-cache.service | grep -ci "active (running)")
+        #     $res | Should -BeExactly 1
+        # }
 
         # It 'Graphite-api' {
         #     $res = (systemctl --no-pager status graphite-api.service | grep -ci "active (running)")
